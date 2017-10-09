@@ -1,6 +1,10 @@
 
 import argparse
 from bs4 import BeautifulSoup
+import itertools
+import threading
+import time
+import sys
 
 import requests
 
@@ -11,6 +15,17 @@ built on requests and Beautiful Soup 4
 
 """
 
+def animate():
+    for c in itertools.cycle(['|', '/', '-', '\\']):
+        if done:
+            break
+        sys.stdout.write('\rWe are loading your data please wait ' + c)
+        sys.stdout.flush()
+        time.sleep(0.1)
+    sys.stdout.write('-----------------------------------------------------------------     \n')
+
+
+done = False
 
 def get_stock(stock_lists):
     prefix_link = "http://www.cophieu68.vn/snapshot.php?id="
@@ -40,15 +55,19 @@ def main():
     parser.add_argument('stock_lists', nargs='+', type=str, help='Input your list of stock')
     args = parser.parse_args()
     stock_lists = args.stock_lists
-    coin_news = ("Here is your investing news\n"
-                 "_________________________________________________\n"
+    coin_news = ("\nHere is your investing news\n"
+                 "-----------------------------------------------------------------\n"
                  "The price of your beloved bitcoin\n{0}\n"
                  "The price of your beloved ethereum\n{1}".format(get_bitcoin(), get_ether()))
-    stock_news = ["Here is the price of {0} : {1} ".format(name, price) for name, price in get_stock(stock_lists)]
+    if stock_lists:
+        stock_news = ["Here is the price of {0} : {1} ".format(name, price) for name, price in get_stock(stock_lists)]
     print(coin_news)
     for new in stock_news:
         print(new)        
 
 
 if __name__ == '__main__':
+    t = threading.Thread(target=animate)
+    t.start()
     main()
+    done = True

@@ -8,6 +8,6 @@ this script will help you do that instead
 
 I'm modifying this to display more numbers that it can do, like the increase of the price
 
-:~~~ termianl
+~~~ terminal
 python3 portfolio_managing.py *stock_names
 ~~~
